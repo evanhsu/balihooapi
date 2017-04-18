@@ -9,6 +9,7 @@ class Puzzle
      * Letters with a larger array index have larger value.
      */
     public $letters = ['A', 'B', 'C', 'D'];
+    private $dirtySort = false;
 
     protected $columnLabels = ['A', 'B', 'C', 'D'];
 
@@ -35,12 +36,14 @@ class Puzzle
 
     public function sortLetters()
     {
+        $this->dirtySort = false;
+        
         foreach($this->letters as $rowLetter)
         {
             foreach($this->rows[$rowLetter] as $i => $symbol)
             {
                 $columnLetter = $this->columnLabels[$i];
-                $this->setLetterPosition($columnLetter, $symbol, $rowLetter);
+                $didMove = $this->setLetterPosition($columnLetter, $symbol, $rowLetter);
             }
         }
     }
@@ -54,8 +57,12 @@ class Puzzle
         switch($symbol) {
             case '>':
                 // Signifies that the column letter should be greater than the row letter
-                if($rowLetterIndex > $columnLetterIndex) {
-                   $this->swap($rowLetterIndex, $columnLetterIndex);
+                if($columnLetterIndex < $rowLetterIndex) {
+                    $this->swap($rowLetterIndex, $columnLetterIndex);
+                    if(abs($rowLetterIndex - $columnLetterIndex) > 1) {
+                        $this->dirtySort = true;
+                    }
+                    return true;
                 }
                 break;
 
@@ -63,9 +70,15 @@ class Puzzle
                 // Signifies that the row letter should be greater than the column letter
                 if($columnLetterIndex > $rowLetterIndex) {
                    $this->swap($rowLetterIndex, $columnLetterIndex);
+                   if(abs($rowLetterIndex - $columnLetterIndex) > 1) {
+                        $this->dirtySort = true;
+                    }
+                   return true;
                 }
                 break;
         }
+
+        return false;
     }
 
     private function compare($columnLetter, $rowLetter)
@@ -116,7 +129,9 @@ class Puzzle
     public function solution()
     {
         // Sort letters
-        $this->sortLetters();
+        do {
+            $this->sortLetters();
+        } while ($this->dirtySort);
 
         // Populate matrix with missing symbols
         $this->populateMatrixWithSymbols();
