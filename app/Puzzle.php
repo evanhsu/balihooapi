@@ -122,7 +122,12 @@ class Puzzle
         $this->populateMatrixWithSymbols();
 
         // Construct response from matrix
-        return $this->rows;
+        $response = " " . implode('', $this->columnLabels);
+        foreach($this->rows as $rowLetter => $row) {
+            $response .= "\n" . $rowLetter . implode('', $row);
+        }
+
+        return $response;
     }
 
 }
