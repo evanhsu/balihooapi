@@ -12,7 +12,6 @@ class ResponseController extends Controller
     	'ping'			=> 'OK',
     	'phone'			=> '541-728-3826',
     	'resume'		=> 'www.smirksoftware.com/resume.pdf',
-    	'puzzle'		=> " ABCD\nA=>>>\nB<=<<\nC<>=>\nD<><=",
     	'email address'		=> 'evanhsu@gmail.com',
     	'degree'		=> 'BSEE - University of Michigan College of Engineering',
     	'source'		=> 'https://github.com/evanhsu/balihooapi',
@@ -52,11 +51,3 @@ class ResponseController extends Controller
     }
 }
 
- ABCD
-A=<->
-b>=--
-c--=<
-d<->=
-
-BADC
->>>>>Greater
