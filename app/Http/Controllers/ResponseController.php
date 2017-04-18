@@ -12,7 +12,7 @@ class ResponseController extends Controller
     protected $answers = [
     	'ping'			=> 'OK',
     	'phone'			=> '541-728-3826',
-    	'resume'		=> 'www.smirksoftware.com/resume.pdf',
+    	'resume'		=> 'www.smirksoftware.com/resume',
     	'email address'		=> 'evanhsu@gmail.com',
     	'degree'		=> 'BSEE - University of Michigan College of Engineering',
     	'source'		=> 'https://github.com/evanhsu/balihooapi',
@@ -32,6 +32,10 @@ class ResponseController extends Controller
 
     	if($q == 'puzzle') {
 	    	return response($this->solvePuzzle($request->get('d')));
+    	}
+
+    	if(!isset($answers[$q])) {
+    		abort(400, "Your request is not supported");
     	}
 
     	return response($this->answers[$q], 200);
