@@ -29,9 +29,20 @@ class ResponseController extends Controller
     	$this->logRequest($request);
 
     	$q = strtolower(urldecode($request->get('q')));
-    	$d = strtolower(urldecode($request->get('d')));
+
+    	if($q == 'puzzle') {
+	    	return response($this->solvePuzzle($request->get('d')));
+    	}
 
     	return response($this->answers[$q], 200);
+    }
+
+
+    public function solvePuzzle($puzzleRequestString)
+    {
+    	$puzzle = new Puzzle($puzzleRequestString);
+
+    	return $puzzle->solution();
     }
 
 
@@ -40,3 +51,12 @@ class ResponseController extends Controller
     	Log::info($request->fullUrl());
     }
 }
+
+ ABCD
+A=<->
+b>=--
+c--=<
+d<->=
+
+BADC
+>>>>>Greater
