@@ -12,8 +12,8 @@ class ResponseController extends Controller
     	'ping'			=> 'OK',
     	'phone'			=> '541-728-3826',
     	'resume'		=> 'www.smirksoftware.com/resume.pdf',
-    	'puzzle'		=> ' ABCD\nA=>>>\nB<=<<\nC<>=>\nD<><=',
-    	'email address'	=> 'evanhsu@gmail.com',
+    	'puzzle'		=> " ABCD\nA=>>>\nB<=<<\nC<>=>\nD<><=",
+    	'email address'		=> 'evanhsu@gmail.com',
     	'degree'		=> 'BSEE - University of Michigan College of Engineering',
     	'source'		=> 'https://github.com/evanhsu/balihooapi',
     	'name'			=> 'Evan Hsu',
@@ -23,19 +23,20 @@ class ResponseController extends Controller
     	'status'		=> 'Yes',
     ];
 
+
     public function index(Request $request)
     {
-    	this->logRequest();
+    	$this->logRequest($request);
 
-    	q = strtolower(urldecode($request->get('q')));
-    	d = strtolower(urldecode($request->get('d')));
+    	$q = strtolower(urldecode($request->get('q')));
+    	$d = strtolower(urldecode($request->get('d')));
 
-    	return response($this->answers[q], 200);
+    	return response($this->answers[$q], 200);
     }
 
-    public function logRequest()
+
+    public function logRequest($request)
     {
-    	Log::info("=============================");
     	Log::info($request->fullUrl());
     }
 }
