@@ -14,3 +14,4 @@ use Illuminate\Http\Request;
 */
 
 Route::get('/', 'ResponseController@index');
+Route::get('/{anything}', 'ResponseController@index')->where('anything', '.*');
