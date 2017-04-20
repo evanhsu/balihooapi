@@ -3,6 +3,16 @@
 namespace App;
 
 
+/**
+ * Puzzle
+ *
+ * This class takes a puzzle matrix (with missing values) as input
+ * and provides the completed matrix as output (by calling the `solution()` method).
+ *
+ * High-level solution strategy:
+ * 1) Use the provided input matrix to sort the letters A, B, C, D into their proper order.
+ * 2) Read back the vector of letters to complete the missing matrix values.
+ */
 class Puzzle
 {
     /**
@@ -43,7 +53,7 @@ class Puzzle
             foreach($this->rows[$rowLetter] as $i => $symbol)
             {
                 $columnLetter = $this->columnLabels[$i];
-                $didMove = $this->setLetterPosition($columnLetter, $symbol, $rowLetter);
+                $this->setLetterPosition($columnLetter, $symbol, $rowLetter);
             }
         }
     }
