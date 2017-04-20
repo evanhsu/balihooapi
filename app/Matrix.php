@@ -25,7 +25,7 @@ class Matrix
 		$this->rows = [];
 	}
 
-    /**
+	/**
 	 * Applies the callback function to each element of the matrix.
 	 *
      * @param $callback function 	signature: $callback($rowLetter, $columnLetter, $columnIndex, $symbol)
@@ -64,7 +64,7 @@ class Matrix
 	 *
 	 * @param $sentence	string 	"A->--"
 	 */
-    public function pushRow($sentence)
+	public function pushRow($sentence)
 	{
 		$row = str_split($sentence);
 		$this->rows[array_shift($row)] = $row;
