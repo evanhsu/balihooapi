@@ -28,8 +28,8 @@ class Matrix
 	/**
 	 * Applies the callback function to each element of the matrix.
 	 *
-     * @param $callback function 	signature: $callback($rowLetter, $columnLetter, $columnIndex, $symbol)
-     */
+	 * @param $callback function 	signature: $callback($rowLetter, $columnLetter, $columnIndex, $symbol)
+	 */
 	public function each(callable $callback)
 	{
 		foreach($this->rowColumnLabels as $rowLetter)
