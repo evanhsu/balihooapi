@@ -34,8 +34,8 @@ class ResponseController extends Controller
 	    	return response($this->solvePuzzle($request->get('d')));
     	}
 
-    	if(!isset($answers[$q])) {
-    		abort(400, "Your request is not supported");
+    	if(!isset($this->answers[$q])) {
+    		return response("Your request is not supported", 400);
     	}
 
     	return response($this->answers[$q], 200);
