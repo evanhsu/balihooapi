@@ -26,7 +26,7 @@ class ResponseController extends Controller
 
     public function index(Request $request)
     {
-    	$this->logRequest($request);
+    	// $this->logRequest($request);
 
     	$q = strtolower(urldecode($request->get('q')));
 

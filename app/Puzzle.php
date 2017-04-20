@@ -1,8 +1,7 @@
 <?php
 
 namespace App;
-
-
+use Illuminate\Support\Facades\Log;
 /**
  * Puzzle
  *
@@ -15,125 +14,52 @@ namespace App;
  */
 class Puzzle
 {
-    /**
-     * Letters with a larger array index have larger value.
-     */
-    public $letters = ['A', 'B', 'C', 'D'];
-    private $dirtySort = false;
+    protected $rowColumnLabels = ['A', 'B', 'C', 'D'];
+    protected $matrix;
+    protected $letters;
 
-    protected $columnLabels = ['A', 'B', 'C', 'D'];
-
-    public $rows = [];
-
-    public function __construct(String $requestString)
+    public function __construct($requestString)
     {
-        $textRows = array_slice(explode("\n", urldecode($requestString)),2); // Discard the 1st 2 rows of header info
+        $this->matrix = new Matrix($this->rowColumnLabels);
+        $this->letters = new Vector($this->rowColumnLabels);
+
+        // Discard the 1st 2 rows of header info
+        $textRows = array_slice(explode("\n", urldecode($requestString)), 2); 
         foreach($textRows as $sentence) 
         {
             if($sentence != "") {
-                $this->pushRow($sentence);
+                $this->matrix->pushRow($sentence);
             }
         }
     }
-
-
-    public function pushRow($sentence)
+    //  BCDA
+    private function sortLetters()
     {
-        $row = str_split($sentence);
-        $this->rows[array_shift($row)] = $row;
-    }
+        $this->letters->cleanUp();
 
+        // $this->matrix->each(function($rowLetter, $columnLetter, $columnIndex, $symbol) {
+        //     $this->letters->sortLetterPair($columnLetter, $symbol, $rowLetter);
+        // });
 
-    public function sortLetters()
-    {
-        $this->dirtySort = false;
+        // $this->dirtySort = false;
         
-        foreach($this->letters as $rowLetter)
+        foreach($this->rowColumnLabels as $rowLetter)
         {
-            foreach($this->rows[$rowLetter] as $i => $symbol)
+            foreach($this->matrix->getRow($rowLetter) as $i => $symbol)
             {
-                $columnLetter = $this->columnLabels[$i];
-                $this->setLetterPosition($columnLetter, $symbol, $rowLetter);
+                $columnLetter = $this->rowColumnLabels[$i];
+                $this->letters->sortLetterPair($columnLetter, $symbol, $rowLetter);
             }
-        }
-    }
-
-
-    private function setLetterPosition($columnLetter, $symbol, $rowLetter)
-    {
-        $rowLetterIndex = $this->indexOf($rowLetter);
-        $columnLetterIndex = $this->indexOf($columnLetter);
-
-        switch($symbol) {
-            case '>':
-                // Signifies that the column letter should be greater than the row letter
-                if($columnLetterIndex < $rowLetterIndex) {
-                    $this->swap($rowLetterIndex, $columnLetterIndex);
-                    if(abs($rowLetterIndex - $columnLetterIndex) > 1) {
-                        $this->dirtySort = true;
-                    }
-                    return true;
-                }
-                break;
-
-            case '<':
-                // Signifies that the row letter should be greater than the column letter
-                if($columnLetterIndex > $rowLetterIndex) {
-                   $this->swap($rowLetterIndex, $columnLetterIndex);
-                   if(abs($rowLetterIndex - $columnLetterIndex) > 1) {
-                        $this->dirtySort = true;
-                    }
-                   return true;
-                }
-                break;
-        }
-
-        return false;
-    }
-
-    private function compare($columnLetter, $rowLetter)
-    {
-        $rowLetterIndex = $this->indexOf($rowLetter);
-        $columnLetterIndex = $this->indexOf($columnLetter);
-
-        if($rowLetterIndex === $columnLetterIndex) {
-            return '=';
-        }
-
-        if($columnLetterIndex > $rowLetterIndex) {
-            return '>';
-        }
-
-        if($columnLetterIndex < $rowLetterIndex) {
-            return '<';
         }
     }
 
     private function populateMatrixWithSymbols()
     {
-        foreach($this->rows as $rowLetter => $symbols)
-        {
-            foreach($symbols as $columnIndex => $symbol)
-            {
-                $columnLetter = $this->columnLabels[$columnIndex];
-
-                if($symbol === '-') {
-                    $this->rows[$rowLetter][$columnIndex] = $this->compare($columnLetter, $rowLetter);
-                }
+        $this->matrix->each(function($rowLetter, $columnLetter, $columnIndex, $symbol) {
+            if($symbol === '-') {
+                $this->matrix->set($rowLetter, $columnLetter, $this->letters->compare($columnLetter, $rowLetter));
             }
-        }
-    }
-
-    private function swap($index1, $index2)
-    {
-        $letter1 = $this->letters[$index1];
-        $this->letters[$index1] = $this->letters[$index2];
-        $this->letters[$index2] = $letter1;
-    }
-
-    private function indexOf($letter)
-    {
-        return array_search($letter, $this->letters);
+        });
     }
 
     public function solution()
@@ -141,16 +67,13 @@ class Puzzle
         // Sort letters
         do {
             $this->sortLetters();
-        } while ($this->dirtySort);
+        } while ($this->letters->isDirty());
 
         // Populate matrix with missing symbols
         $this->populateMatrixWithSymbols();
 
         // Construct response from matrix
-        $response = " " . implode('', $this->columnLabels);
-        foreach($this->rows as $rowLetter => $row) {
-            $response .= "\n" . $rowLetter . implode('', $row);
-        }
+        $response = $this->matrix->toString();
 
         return $response;
     }
