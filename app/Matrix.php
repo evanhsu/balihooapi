@@ -33,13 +33,13 @@ class Matrix
 	public function each(callable $callback)
 	{
 		foreach($this->rowColumnLabels as $rowLetter)
-        {
-            foreach($this->rows[$rowLetter] as $columnIndex => $symbol)
-            {
-                $columnLetter = $this->rowColumnLabels[$columnIndex];
-            	call_user_func_array($callback, [$rowLetter, $columnLetter, $columnIndex, $symbol]);
-            }
-        }
+		{
+			foreach($this->rows[$rowLetter] as $columnIndex => $symbol)
+			{
+				$columnLetter = $this->rowColumnLabels[$columnIndex];
+				call_user_func_array($callback, [$rowLetter, $columnLetter, $columnIndex, $symbol]);
+			}
+		}
 	}
 
 	/**
@@ -65,10 +65,10 @@ class Matrix
 	 * @param $sentence	string 	"A->--"
 	 */
     public function pushRow($sentence)
-    {
-        $row = str_split($sentence);
-        $this->rows[array_shift($row)] = $row;
-    }
+	{
+		$row = str_split($sentence);
+		$this->rows[array_shift($row)] = $row;
+	}
 	
 	/**
 	 * @param $rowLetter 	string
@@ -86,9 +86,9 @@ class Matrix
 	public function toString()
 	{
 		$response = " " . implode('', $this->rowColumnLabels);
-        foreach($this->rows as $rowLetter => $row) {
-            $response .= "\n" . $rowLetter . implode('', $row);
-        }
-        return $response;
+		foreach($this->rows as $rowLetter => $row) {
+			$response .= "\n" . $rowLetter . implode('', $row);
+		}
+		return $response;
 	}
 }
