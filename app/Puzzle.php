@@ -1,7 +1,7 @@
 <?php
 
 namespace App;
-use Illuminate\Support\Facades\Log;
+
 /**
  * Puzzle
  *
@@ -32,26 +32,6 @@ class Puzzle
             }
         }
     }
-    //  BCDA
-    private function sortLetters()
-    {
-        $this->letters->cleanUp();
-
-        // $this->matrix->each(function($rowLetter, $columnLetter, $columnIndex, $symbol) {
-        //     $this->letters->sortLetterPair($columnLetter, $symbol, $rowLetter);
-        // });
-
-        // $this->dirtySort = false;
-        
-        foreach($this->rowColumnLabels as $rowLetter)
-        {
-            foreach($this->matrix->getRow($rowLetter) as $i => $symbol)
-            {
-                $columnLetter = $this->rowColumnLabels[$i];
-                $this->letters->sortLetterPair($columnLetter, $symbol, $rowLetter);
-            }
-        }
-    }
 
     private function populateMatrixWithSymbols()
     {
@@ -78,4 +58,17 @@ class Puzzle
         return $response;
     }
 
+    private function sortLetters()
+    {
+        $this->letters->cleanUp();
+        
+        foreach($this->rowColumnLabels as $rowLetter)
+        {
+            foreach($this->matrix->getRow($rowLetter) as $i => $symbol)
+            {
+                $columnLetter = $this->rowColumnLabels[$i];
+                $this->letters->sortLetterPair($columnLetter, $symbol, $rowLetter);
+            }
+        }
+    }
 }

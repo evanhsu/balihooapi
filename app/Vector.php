@@ -2,6 +2,12 @@
 
 namespace App;
 
+/**
+ * Vector
+ *
+ * A sortable array of letters
+ * i.e. ['A', 'B', 'C', 'D']
+ */
 class Vector
 {
 	/**
@@ -10,11 +16,26 @@ class Vector
 	protected $letters;
     private $dirtySort = false;
 
+    /**
+	 * @param $letters  array
+	 */
 	public function __construct(array $letters)
 	{
 		$this->letters = $letters;
 	}
 
+	/**
+	 *
+	 */
+	public function cleanUp()
+    {
+    	$this->dirtySort = false;
+    }
+
+    /**
+     * @param $letter1 	string
+     * @param $letter2 	string
+     */
 	public function compare($letter1, $letter2)
     {
         $letter1Index = $this->indexOf($letter1);
@@ -33,6 +54,27 @@ class Vector
         }
     }
 
+    /**
+	 * @param $letter 	string	
+	 */
+    public function indexOf($letter)
+    {
+        return array_search($letter, $this->letters);
+    }
+
+	/**
+	 *
+	 */
+    public function isDirty()
+    {
+    	return $this->dirtySort;
+    }
+
+	/**
+	 * @param $letter1 	string
+	 * @param $symbol 	string
+	 * @param $letter2 	string
+	 */
 	public function sortLetterPair($letter1, $symbol, $letter2)
     {
         $letter1Index = $this->indexOf($letter1);
@@ -65,25 +107,14 @@ class Vector
         return false;
     }
 
+    /**
+	 * @param $index1 	int
+	 * @param $index2 	int
+	 */
     private function swap($index1, $index2)
     {
         $letter1 = $this->letters[$index1];
         $this->letters[$index1] = $this->letters[$index2];
         $this->letters[$index2] = $letter1;
-    }
-
-    public function indexOf($letter)
-    {
-        return array_search($letter, $this->letters);
-    }
-
-    public function isDirty()
-    {
-    	return $this->dirtySort;
-    }
-
-    public function cleanUp()
-    {
-    	$this->dirtySort = false;
     }
 }

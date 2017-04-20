@@ -16,10 +16,46 @@ class Matrix
 	protected $rows;
 	protected $rowColumnLabels;
 
-	public function __construct($labels)
+	/**
+	 * @param $labels array 	i.e. ['A', 'B', 'C', 'D']
+	 */
+	public function __construct(array $labels)
 	{
 		$this->rowColumnLabels = $labels;
 		$this->rows = [];
+	}
+
+    /**
+	 * Applies the callback function to each element of the matrix.
+	 *
+     * @param $callback function 	signature: $callback($rowLetter, $columnLetter, $columnIndex, $symbol)
+     */
+	public function each(callable $callback)
+	{
+		foreach($this->rowColumnLabels as $rowLetter)
+        {
+            foreach($this->rows[$rowLetter] as $columnIndex => $symbol)
+            {
+                $columnLetter = $this->rowColumnLabels[$columnIndex];
+            	call_user_func_array($callback, [$rowLetter, $columnLetter, $columnIndex, $symbol]);
+            }
+        }
+	}
+
+	/**
+	 * @param $rowLetter string
+	 */
+	public function getRow($rowLetter)
+	{
+		return $this->rows[$rowLetter];
+	}
+
+	/**
+	 * @param $letter string
+	 */
+	public function indexOfColumnLetter($letter)
+	{
+		return array_search($letter, $this->rowColumnLabels);
 	}
 
 	/**
@@ -34,38 +70,19 @@ class Matrix
         $this->rows[array_shift($row)] = $row;
     }
 	
-    /**
-	 * Applies the callback function to each element of the matrix.
-	 *
-     * Function signature: $callback($rowLetter, $columnLetter, $columnIndex, $symbol)
-     */
-	public function each(callable $callback)
-	{
-		foreach($this->rowColumnLabels as $rowLetter)
-        {
-            foreach($this->rows[$rowLetter] as $columnIndex => $symbol)
-            {
-                $columnLetter = $this->rowColumnLabels[$columnIndex];
-            	call_user_func_array($callback, [$rowLetter, $columnLetter, $columnIndex, $symbol]);
-            }
-        }
-	}
-
-	public function getRow($rowLetter)
-	{
-		return $this->rows[$rowLetter];
-	}
-
+	/**
+	 * @param $rowLetter 	string
+	 * @param $columnLetter string
+	 * @param $value		string
+	 */
 	public function set($rowLetter, $columnLetter, $value)
 	{
 		$this->rows[$rowLetter][$this->indexOfColumnLetter($columnLetter)] = $value;
 	}
 
-	public function indexOfColumnLetter($letter)
-	{
-		return array_search($letter, $this->rowColumnLabels);
-	}
-
+	/**
+	 *
+	 */
 	public function toString()
 	{
 		$response = " " . implode('', $this->rowColumnLabels);
